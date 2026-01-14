@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Tarot card grid & flip styles */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.card-root { display: flex; justify-content: center; }
+.card-inner {
+  width: 100%;
+  max-width: 520px;
+  height: 220px;
+  perspective: 1200px;
+  cursor: pointer;
+}
+.card-inner .card-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15,15,15,0.06);
+  overflow: hidden;
+  transition: transform 600ms cubic-bezier(.22,.9,.35,1), opacity 300ms;
+}
+.card-inner { position: relative; }
+.card-front { transform: rotateY(0); }
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
+  padding: 14px;
+}
+.card-inner.is-flipped .card-front { transform: rotateY(-180deg); }
+.card-inner.is-flipped .card-back { transform: rotateY(0deg); }
+.card-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-placeholder { background: #f3f4f6; }
+
+@media (max-width: 640px) {
+  .card-inner { height: 260px; }
+}
+
+/* Instruction box above tarot spread */
+.tarot-instruction {
+  padding: 12px 14px;
+  background: linear-gradient(180deg,#fff5f8,#fffafc);
+  border-left: 4px solid #f6a5bf;
+  border-radius: 8px;
+  color: #222;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* Start button styling */
+.start-button {
+  background: linear-gradient(180deg,#ffdff2,#fff8fb);
+  color: #222;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(219,39,119,0.12);
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 120ms;
+}
+.start-button:hover { transform: translateY(-2px); }
+.start-button:active { transform: translateY(0); box-shadow: 0 3px 10px rgba(219,39,119,0.12); }
+.start-button:focus { outline: 3px solid rgba(246,150,190,0.22); outline-offset: 2px; }
+
+
+/* Shuffle animation */
+.shuffle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  height: 220px;
+}
+.shuffle-card {
+  width: 140px;
+  height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  transform-origin: 50% 50%;
+  animation: shuffleAnim 1000ms ease-in-out infinite;
+}
+.shuffle-card:nth-child(2) { animation-delay: 120ms; }
+.shuffle-card:nth-child(3) { animation-delay: 260ms; }
+
+@keyframes shuffleAnim {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-16px) rotate(-8deg); }
+  50% { transform: translateY(0) rotate(8deg); }
+  75% { transform: translateY(-8px) rotate(-4deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Landing hero styles */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* force full viewport height */
+  display: flex;
+  align-items: center; /* vertical center */
+  justify-content: center; /* horizontal center */
+  color: #fff;
+  background-image: url('https://images.pexels.com/photos/6766456/pexels-photo-6766456.jpeg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6,6,23,0.45) 0%, rgba(6,6,23,0.6) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 48px 20px;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.hero-english {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  opacity: 0.95;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+/* Typing animation for the small English label */
+.hero-english.typing {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+  display: inline-block;
+  overflow: hidden; /* hide the overflowing text during typing */
+  white-space: nowrap;
+  border-right: 2px solid rgba(255,255,255,0.9); /* caret */
+  box-sizing: content-box;
+  width: 0ch; /* start at 0 so animation expands to full */
+  animation: typing 2400ms steps(20, end) 240ms forwards, caret 700ms steps(1,end) 2640ms infinite;
+}
+
+@keyframes typing {
+  from { width: 0ch; }
+  to { width: 20ch; } /* enough for 'Welcome To Tarot AI' and safe padding */
+}
+
+@keyframes caret {
+  50% { border-color: transparent; }
+  100% { border-color: rgba(255,255,255,0.9); }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-english.typing { animation: none; width: auto; border-right: none; }
+}
+.hero-content h1 {
+  font-size: 44px;
+  margin: 0 0 12px 0;
+  line-height: 1.05;
+  text-shadow: 0 6px 28px rgba(3,7,18,0.6);
+}
+.hero-sub {
+  font-size: 18px;
+  margin: 0 0 18px 0;
+  color: #f0f6ff;
+  opacity: 0.95;
+}
+.hero-sub-en {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 14px;
+  color: rgba(240,246,255,0.9);
+  opacity: 0.92;
+}
+
+/* Instruction English translation styling */
+.instruction-en {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(50,50,60,0.92);
+  opacity: 0.95;
+}
+.scroll-down {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  font-size: 24px;
+  transition: transform 200ms ease, background 200ms ease;
+}
+.scroll-down:hover { transform: translateY(-4px); background: rgba(255,255,255,0.18); }
+
+/* Make the tarot section sit directly below the hero */
+#tarot { padding-top: 28px; padding-bottom: 40px; }
+
+@media (max-width: 640px) {
+  .hero-content h1 { font-size: 32px; }
+  .hero-sub { font-size: 15px; }
+}
+
+/* Hero text animations: fade/float in and subtle gradient shimmer */
+.hero-content h1 {
+  background-image: linear-gradient(90deg, #ffffff 0%, #ffd6e0 50%, #a6e3ff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 900ms cubic-bezier(.2,.9,.2,1) 180ms both, bgShift 3000ms linear 900ms infinite;
+}
+.hero-sub {
+  color: rgba(240,246,255,0.95);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 900ms cubic-bezier(.2,.9,.2,1) 360ms both;
+}
+.scroll-down {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeUp 700ms cubic-bezier(.2,.9,.2,1) 620ms both, bounce 1200ms ease 1400ms infinite;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* Summary highlight for important phrases */
+.summary-highlight {
+  background: linear-gradient(90deg, rgba(255,214,230,0.95), rgba(255,243,250,0.9));
+  color: #7a0736;
+  padding: 2px 6px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(250,184,213,0.08);
+}
+
